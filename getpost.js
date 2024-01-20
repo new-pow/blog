@@ -14,7 +14,15 @@ const getPosts = async () => {
             let obj = {}
             let post
             fs.readFile(`${dirPath}/${file}`, "utf-8", (err, contents) =>{
-
+                const getMetadataIndices = (acc, elem, i) => {
+                    if (/^---/.test(elem)) {
+                        acc.push(i)
+                    }
+                    return acc
+                }
+                const lines = contents.split("\n")
+                const metadataIndices = lines.reduce(getMetadataIndices, [])
+            
             })
         })
     })
