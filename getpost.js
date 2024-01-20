@@ -20,9 +20,12 @@ const getPosts = async () => {
                     }
                     return acc
                 }
+                const parseMetadata = ({lines, metadataIndices}) => {
+                    
+                }
                 const lines = contents.split("\n")
                 const metadataIndices = lines.reduce(getMetadataIndices, [])
-            
+                const metadata = parseMetadata({lines, metadataIndices})
             })
         })
     })
