@@ -9,7 +9,6 @@ const getPosts = async () => {
         if (err) {
             return console.log("Failed to list contents of directory: "+err)
         }
-        console.log(files)
         files.forEach((file, i) => {
             let obj = {}
             let post
@@ -21,11 +20,33 @@ const getPosts = async () => {
                     return acc
                 }
                 const parseMetadata = ({lines, metadataIndices}) => {
-                    
+                    if (metadataIndices.length > 0) {
+                        let metadata = lines.slice(metadataIndices[0] + 1,
+                            metadataIndices[1])
+                            metadata.forEach(line => {
+                                obj[line.split(":")[0]] = line.split(":")[1].trim()
+                            })
+                            return obj
+                    }
+                }
+                const parseContent = ({lines, metadataIndices}) => {
+                    if (metadataIndices.length > 0) {
+                        lines = lines.slice(metadataIndices[1] + 1, lines.length)
+                    }
+                    return lines.join("\n")
                 }
                 const lines = contents.split("\n")
                 const metadataIndices = lines.reduce(getMetadataIndices, [])
                 const metadata = parseMetadata({lines, metadataIndices})
+                const content = parseContent({lines, metadataIndices})
+                post = {
+                    id: i + 1,
+                    title: metadata.title ? metadata.title : "No title given",
+                    author: metadata.author ? metadata.author : "No author",
+                    data: metadata.data ? metadata.data : "No data given",
+                    content: content ? content : "No content given"
+                }
+                postlist.push(post)
             })
         })
     })
